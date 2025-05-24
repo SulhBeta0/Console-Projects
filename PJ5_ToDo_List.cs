@@ -1,3 +1,5 @@
+//Finished on February 12th, 2025 -
+
 using System.Text.Json;
 
 namespace Aprender
@@ -113,7 +115,7 @@ namespace Aprender
                         Console.Write("Search the Task by its position-> ");
                         searchingTask2 = Convert.ToInt32(Console.ReadLine());
 
-                        Console.WriteLine("Remember that, you COULD NOT change it back to its original state. Only by removing the task itself.");
+                        Console.WriteLine("Remember that, you COULD NOT change it back to its original state. Only by removing the task.");
                         
                         Console.Write("Now, change the state of it:\n[0= LEAVE IT AS FALSE]\n[1= TRUE]\n-> ");
                         if (int.TryParse(Console.ReadLine(), out changingStateOfTask))
@@ -198,7 +200,7 @@ namespace Aprender
                 if (tag.Contains(' ') || (tag == ""))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR:\n1.You can't add tags with multiple words -\n+ Tag: [Trabajo hecho -> Not permitted] +Tag: [Hecho -> Permitted]\n2. You can't leave it blank\n");
+                    Console.WriteLine("ERROR:\n1.You can't add tags with multiple words -\n+ Tag: [Work Done -> Not permitted] +Tag: [Done -> Permitted]\n2. You can't leave it blank\n");
                     Console.ResetColor();
                 }
                 else {
@@ -297,7 +299,7 @@ namespace Aprender
             {
                 KeyValuePair<string, bool> taskToSearch = _taskData.ElementAt(indexToFind);
 
-                try { //No puedo manejar esta excepción, así lo contralaré así.
+                try {
                     if ((state == 0) && (_taskData[taskToSearch.Key] != true))
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
