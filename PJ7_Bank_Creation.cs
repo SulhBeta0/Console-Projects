@@ -1,4 +1,6 @@
-//º==-V-==º\\
+//Finished in 13-03-2025 -
+//Creating a bank account. Has some errors but if you don't encounter or provoke them, it works :).
+
 using System.Globalization;
 
 namespace Aprender
