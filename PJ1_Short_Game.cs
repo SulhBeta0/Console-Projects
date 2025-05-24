@@ -1,6 +1,6 @@
-using System.Runtime.InteropServices; //Apareció de la nada. Hizo mas que mi padre ^^.
-using Aprender;
+// Finished on January 31st, 2025 -
 
+using Aprender;
 
 class Game
 {
@@ -24,7 +24,6 @@ class Game
             decisiones = Console.ReadLine().ToLower();
             Console.WriteLine("=============================");
 
-            //Lógica de mierda. Mi cerebro no da para tanto -
             if (decisiones == "")
             {
                 break;
@@ -69,7 +68,7 @@ class Game
                     break;
             }
         }
-        Console.WriteLine("\n============================="); //Resumiendo los pobres stats
+        Console.WriteLine("\n=============================");
         Console.WriteLine("PC health || " + ordenador.health);
         Console.WriteLine("My health || " + jugador.vida);
 
@@ -96,7 +95,7 @@ class Game
         return life;
     }
 } 
-// ENEMY SCRIPT:
+// ENEMY:
 namespace Aprender {
     public class Enemy
     {
@@ -104,12 +103,7 @@ namespace Aprender {
     }
 }
 
-/*
-La verdad no se si ha sido buena idea hacer toda una clase y script para 2 líneas xdd. Aunque vi en ciertos videos que
-se hablaba del principio de -Single Responsibility- y pues lo hice como pude. 
-*/
-
-// USER SCRIPT:
+// USER:
 namespace Aprender {
     public class User
     {
