@@ -1,4 +1,4 @@
-//Finished at 6th April, 2025 -
+//Finished on April 6th, 2025 -
 //Simple visualizer of some famous searching & sorting algorithms.
 
 public class Program
