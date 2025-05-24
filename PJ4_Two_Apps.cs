@@ -1,4 +1,7 @@
-using System.Globalization; //Para tener el lenguaje de la libertad -
+//Finished on February 5th, 2025 -
+//One to play a game to earn and the other to buy & sell items.
+
+using System.Globalization;
 
 namespace GeneralSystem
 {
@@ -167,10 +170,8 @@ namespace GeneralSystem
         public static void GameSystem()
         {
             Random rng = new();
-
             int chances = 5;
             int score = 0;
-
 
             Console.WriteLine("Welcome to Play & Earn!");
             Thread.Sleep(500);
@@ -301,7 +302,7 @@ namespace GeneralSystem
         private static readonly Dictionary<string, float> updatedItems = new();
 
 
-        private static Dictionary<string, float> ObjectsListAvailable() //Primero creo la lista donde esten los objetos disponibles a comprar
+        private static Dictionary<string, float> ObjectsListAvailable() //First
         {
             Random rng = new();
 
@@ -318,7 +319,7 @@ namespace GeneralSystem
             return objectsSelected;
         }
 
-        private static Dictionary<string, float> KeepingObjects() //Segundo, guardo los datos para ser usados hasta un término
+        private static Dictionary<string, float> KeepingObjects() //Second
         {
             foreach (var item in ObjectsListAvailable())
             {
@@ -327,7 +328,7 @@ namespace GeneralSystem
             return updatedItems;
         }
 
-        public static void ShowingObjectsList() //Tercero, los muestro
+        public static void ShowingObjectsList() //Third
         {
             CultureInfo language = new("en-US");
 
@@ -340,7 +341,7 @@ namespace GeneralSystem
                         Console.WriteLine($"+ {objeto.Key.ToUpper()} -> " + showingValues);
                     }
                     else {
-                        Console.WriteLine("System is under maintenance :v\n");
+                        Console.WriteLine("System is under maintenance...\n");
                         break;
                     }
                 }
@@ -348,7 +349,7 @@ namespace GeneralSystem
             }
         }
 
-        public static void BuyableItem(string item) //Cuarto, lo animo a comprar
+        public static void BuyableItem(string item) //Fourth
         {
             foreach (KeyValuePair<string, float> objetos in KeepingObjects())
             {
