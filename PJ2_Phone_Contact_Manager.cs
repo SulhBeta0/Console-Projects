@@ -1,3 +1,5 @@
+//Finished on January 27th, 2025 -
+
 using System.Collections.Generic;
 
 public static void Main()
@@ -18,15 +20,15 @@ public static void Main()
         int.TryParse(Console.ReadLine(), out decision);
         if (decision == 1)
         {
-            Console.WriteLine("Cuantos contactos quieres meter ahora?");
+            Console.WriteLine("How many contacts want to insert now?");
             int.TryParse(Console.ReadLine(), out lenghtContactosOneSesion);
 
-            Console.WriteLine("\n- Mételos-");
+            Console.WriteLine("\n- Insert them-");
             for (int i = 0; i < lenghtContactosOneSesion; i++)
             {
-                Console.Write("\nNombre Contacto -> ");
+                Console.Write("\nContact Name -> ");
                 nombContactos = Console.ReadLine().ToLower();
-                Console.Write("\nNumero Contacto -> ");
+                Console.Write("\nContact Number -> ");
                 numContactos = Console.ReadLine();
 
                 contacts.Add(nombContactos, numContactos);
