@@ -1,3 +1,6 @@
+//Finished on March 3rd, 2025 -
+//For example => "super earth" | You'll have to enter the literal spacebar to know if is an space.
+
 public static void Main()
 {
     Random rng = new();
@@ -7,13 +10,12 @@ public static void Main()
     "umbrella", "volcano", "waterfall", "xylophone", "yogurt", "zebra", "adventure", "butterfly", "cactus", "diamond",
     "eclipse", "firefly", "galaxy", "horizon", "illusion", "jigsaw", "koala", "lantern", "melody", "nebula",
     "orchestra", "puzzle", "quicksand", "radiance", "serenity", "twilight", "universe", "voyage", "whisper", "zenith"
-    };
+    }; //Can change
 
     int lifes = 6;
     int wordChoseIndex = rng.Next(0, words.Length);
     
     var myWord = new string('*', words[wordChoseIndex].Length).ToCharArray();
-
 
     do
     {
@@ -26,7 +28,6 @@ public static void Main()
         Console.WriteLine("\nYou have {0} life/s!", lifes);
         Console.WriteLine("\n");
 
-        //My logic :v
         Console.Write("=> ");
         string myCharacter = Console.ReadKey().KeyChar.ToString();
         Console.WriteLine();
