@@ -1,8 +1,11 @@
+//Finished at 6th April, 2025 -
+//Simple visualizer of some famous searching & sorting algorithms.
+
 public class Program
 {
     public static void Main()
     {
-        int[] numsToSortOrSearch = [2, 45, 718, 1, 0, 63, 2, 34, 99, -1, 7, -37, -281, 14, 62, 77, 9, 1];
+        int[] numsToSortOrSearch = [2, 45, 718, 1, 0, 63, 2, 34, 99, -1, 7, -37, -281, 14, 62, 77, 9, 1]; //Can change
 
         Console.Write("Write like this to see some algorithms\n");
         Console.WriteLine("sort/search [typeof] ");
