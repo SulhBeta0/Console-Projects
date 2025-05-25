@@ -1,5 +1,5 @@
-//Finished in 13-03-2025 -
-//Creating a bank account. Has some errors but if you don't encounter or provoke them, it works :).
+//Finished on March 13th, 2025 -
+//Simulaton of a bank account. Has errors but if you don't encounter or provoke them, it works.
 
 using System.Globalization;
 
@@ -51,7 +51,7 @@ namespace Aprender
                     while (decision != "exit" && !String.IsNullOrEmpty(decision));
                 }
             }
-            catch (NullReferenceException) { throw new NullReferenceException("MAKE SURE TO NOT FAIL WITH SOMETHING OR IT WON'T WORK XDDD"); }
+            catch (NullReferenceException) { throw new NullReferenceException("MAKE SURE TO NOT FAIL WITH SOMETHING OR IT WON'T WORK"); }
             
             Console.WriteLine("Goodbye!");
         }
@@ -107,7 +107,7 @@ namespace Aprender
         private User _data;
 
         public void CreatingAccountVisual()
-        {
+        {//If any data from here is missed, nothing will work
             Console.WriteLine("Insert your full name -");
             string fullName = Console.ReadLine()!.ToUpper();
             if (String.IsNullOrEmpty(fullName)) { ErrorMessages("YOU CAN'T LEAVE IT BLANK!"); return; }
@@ -138,8 +138,7 @@ namespace Aprender
             var date = new DateOnly(year, month, day);
 
             /* var todayDate = DateOnly.FromDateTime(DateTime.Today);
-             * I tried to do that if you're underage you cannot do an account, but
-             * I didn't reach out with a solution.
+             * I tried to do that if you're underage you cannot do an account, but I didn't reach out with a solution.
             */
             Console.WriteLine("Do you want to confirm your action? -yes- or -no-");
             CreatingAccount(fullName, identification, phoneNumber, CreatingPasswordAccount(), date);
