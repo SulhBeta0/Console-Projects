@@ -5,10 +5,6 @@ namespace Weapons_Game.database
 {
     public static class MyDatabase
     {
-        //Insertar / Actualizar / Borrar datos = ExecuteNonQuery()
-        //Leer datos(consultas tipo SELECT) = ExecuteReader()
-        //Obtener un único valor(tipo COUNT(*)) = ExecuteScalar()
-
         private static readonly Random _rng = new();
         private static readonly string _stringConnection = @$"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "base_Datos.db")}";
         private static SqliteConnection? _conectarBase;
