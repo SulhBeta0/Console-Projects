@@ -1,9 +1,5 @@
-﻿//Finished on -
+﻿//Finished on July 28th, 2025
 //Tap to earn money, buy upgrades and level up.
-
-// Me queda - 
-// Hacer la lógica de los logros
-// Modificar los menús segun: Que logros o mejoras tengo y si he alcanzado el maximo de alguna 
 
 using System.Runtime.Versioning;
 using Clicks.Tools;

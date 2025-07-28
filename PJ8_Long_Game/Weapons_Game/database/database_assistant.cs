@@ -5,10 +5,6 @@ namespace Weapons_Game.database
 {
     public static class MyDatabase
     {
-        //Insertar / Actualizar / Borrar datos = ExecuteNonQuery()
-        //Leer datos(consultas tipo SELECT) = ExecuteReader()
-        //Obtener un único valor(tipo COUNT(*)) = ExecuteScalar()
-
         private static readonly Random _rng = new();
         private static readonly string _stringConnection = @$"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "database", "base_Datos.db")}";
         private static SqliteConnection? _conectarBase;
@@ -136,7 +132,7 @@ namespace Weapons_Game.database
             comando.Parameters.AddWithValue("@Number", _rng.Next(1, countRows + 1));
 
             using var dataReader = comando.ExecuteReader();
-            if(dataReader.Read())
+            if (dataReader.Read())
             {
                 name = dataReader.GetString(0);
                 health = int.Parse(dataReader.GetString(1));
@@ -169,7 +165,7 @@ namespace Weapons_Game.database
                 dropsProbabilities.Add((itemUniqueName, probability, minItems, maxItems));
             }
 
-            if(dropsProbabilities.Count < 1) return (String.Empty, 0);
+            if (dropsProbabilities.Count < 1) return (String.Empty, 0);
 
             float roulette = MathF.Round(_rng.NextSingle() * 100f, 2);
             float maxProbabilityNumber = MathF.Round(dropsProbabilities[0].probabilityDrops, 2);
@@ -196,7 +192,7 @@ namespace Weapons_Game.database
             comando.Parameters.AddWithValue("@nombreItem", itemName);
 
             using var reader = comando.ExecuteReader();
-            if(reader.Read()) return reader.GetDouble(0);
+            if (reader.Read()) return reader.GetDouble(0);
 
             return 0.00;
         }
