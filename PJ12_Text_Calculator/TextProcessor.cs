@@ -18,7 +18,7 @@ internal static class TextProcessor
     internal static (List<double> numbers, List<string> operations) SplitText
         (string myText, double? acumulator, List<double> listNumbers, List<string> listOperations)
     {
-        int count = 0;
+        int countOperations = 0;
 
         //string[] textSortedAndSplited = SortingText(myText).Split(" ", StringSplitOptions.RemoveEmptyEntries);
         string[] textSplit = myText.Split(" ", StringSplitOptions.RemoveEmptyEntries);
@@ -37,10 +37,11 @@ internal static class TextProcessor
                 continue;
             }
 
-            if (Calculator.MyActions.Contains<string>(textSplit[i]) && count <= Calculator._maxConsecutivesOperations)
+            if (Calculator.MyActions.Contains<string>(textSplit[i]) &&
+                countOperations <= Calculator._maxConsecutivesOperations)
             {
                 listOperations.Add(textSplit[i]);
-                count++;
+                countOperations++;
             }
         }
 
