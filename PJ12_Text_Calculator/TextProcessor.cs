@@ -6,11 +6,9 @@ internal static class TextProcessor
     internal static string Text()
     {
         Messages("<<help:\n", ConsoleColor.DarkGray);
-        Messages("C://Users//Calculator.exe> ", ConsoleColor.DarkGreen);
+        Messages("C:/Users/Calculator.exe> ", ConsoleColor.DarkGreen);
 
         string text = Console.ReadLine()?.ToUpper()!;
-
-        //string secureText = String.IsNullOrWhiteSpace(text) ? " " : text;
         return text;
     }
 
