@@ -1,6 +1,4 @@
 ﻿namespace PJ12_Text_Calculator;
-
-using System.Text;
 using static Calculator;
 
 #pragma warning disable CA1416
@@ -8,12 +6,12 @@ public class ArithmeticParser
 {
     private static readonly Dictionary<string, short> _precedence = new()
     {
-        {"(", 0 },
+        {"(", 0 }, //temporal
         {Actions.PLUS.ToString(), 1 },
         {Actions.MINUS.ToString(), 1 },
         {Actions.TIMES.ToString(), 2 },
-        {Actions.DIVIDED.ToString(), 2 },
-        {Actions.POWER.ToString(), 3 }
+        {Actions.DIVIDED.ToString(), 3 },
+        {Actions.POWER.ToString(), 4 } //temporal
 
     };
     private static readonly List<string> _op_stack = [];
@@ -28,16 +26,15 @@ public class ArithmeticParser
     public void ParsingOperations(string input)
     {
         string[] tokens = input.Split(" ", StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries);
-        
-        if (!TokensAuthentication(tokens) && VariablePostCalculations.HasValue) return;
-        else if (!TokensAuthentication(tokens))
+        if (!TokensAuthentication(tokens))
         {
             TextProcessor.Messages("Syntax Error!\n\n", ConsoleColor.Red);
             Console.Beep(450, 300);
+            RestartValues();
             return;
         }
 
-        if (tokens.Length == 1 && !VariablePostCalculations.HasValue || VariablePostCalculations.HasValue)
+        if (tokens.Length == 1 && (!VariablePostCalculations.HasValue || VariablePostCalculations.HasValue))
         {
             VariablePostCalculations = double.Parse(tokens[0]);
             return;
@@ -46,10 +43,19 @@ public class ArithmeticParser
         short operationInStack = 0, inputOperation = 0;
         int counter;
 
-        _output.Add(tokens[0]);
-        _op_stack.Add(tokens[1]);
+        if (!VariablePostCalculations.HasValue)
+        {
+            _output.Add(tokens[0]);
+            _op_stack.Add(tokens[1]);
+        }
+        else
+        {
+            _output.Add(VariablePostCalculations.ToString()!);
+            _op_stack.Add(tokens[0]);
+        }
 
-        for (int i = 2; i < tokens.Length; i++)
+        int startingIndex = !VariablePostCalculations.HasValue ? 2 : 1;
+        for (int i = startingIndex; i < tokens.Length; i++)
         {
             if (double.TryParse(tokens[i], out _))
             {
@@ -74,20 +80,21 @@ public class ArithmeticParser
                 counter--;
             }
             if (_op_stack.Count == 0) _op_stack.Add(tokens[i]);
-        }
+            }
 
         while (_op_stack.Count > 0)
         {
             _output.Add(_op_stack.Last<String>());
             _op_stack.RemoveAt(_op_stack.Count - 1);
         }
-        SolvingOutput(_output);
 
         //foreach (var item in _output)
         //{
         //    Console.Write(item + " ");
         //}
         //Console.WriteLine("\n");
+
+        SolvingOutput(_output);
 
         _output.Clear();
     }
@@ -108,6 +115,7 @@ public class ArithmeticParser
         Actions myOperation;
 
         if (!VariablePostCalculations.HasValue) VariablePostCalculations = 0;
+        _solving_stack.Clear();
 
         while (counter < list.Count)
         {
@@ -161,13 +169,18 @@ public class ArithmeticParser
             if (VariablePostCalculations.HasValue && arr.Length > 1)
             {
                 isAuthenticOperator = MyActions.Contains(arr[i].ToUpper());
-                isNumber = i % 2 == 0 && double.TryParse(arr[i], out _);
+                isNumber = i % 2 != 0 && double.TryParse(arr[i], out _);
+
+                if (double.TryParse(arr[0], out _)) RestartValues();
             }
-            else if (VariablePostCalculations.HasValue && arr.Length < 1) return false;
+            else if (
+                VariablePostCalculations.HasValue &&
+                arr.Length == 1 &&
+                double.TryParse(arr[i], out _)) return true;
 
             if (!VariablePostCalculations.HasValue)
             {
-                isAuthenticOperator = i % 2 == 0 && MyActions.Contains(arr[i].ToUpper());
+                isAuthenticOperator = i % 2 != 0 && MyActions.Contains(arr[i].ToUpper());
                 isNumber = double.TryParse(arr[i], out _);
             }
 
