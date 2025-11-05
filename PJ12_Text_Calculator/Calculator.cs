@@ -30,6 +30,8 @@ internal class Calculator
 
             parser.ParsingOperations(myText);
             parser.Result();
+
+            Console.ReadKey(true);
         }
     }
 

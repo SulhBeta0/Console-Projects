@@ -6,12 +6,11 @@ public class ArithmeticParser
 {
     private static readonly Dictionary<string, short> _precedence = new()
     {
-        {"(", 0 }, //temporal
         {Actions.PLUS.ToString(), 1 },
         {Actions.MINUS.ToString(), 1 },
         {Actions.TIMES.ToString(), 2 },
         {Actions.DIVIDED.ToString(), 3 },
-        {Actions.POWER.ToString(), 4 } //temporal
+        {Actions.POWER.ToString(), 4 }
 
     };
     private static readonly List<string> _op_stack = [];
@@ -40,21 +39,23 @@ public class ArithmeticParser
             return;
         }
 
-        short operationInStack = 0, inputOperation = 0;
-        int counter;
+        short operatorInStackValue = 0, inputOperatorValue = 0;
+        int counter, startingIndex;
+        bool hasReachedAParenthesis = false;
+        bool hasExitAParenthesis = false;
 
         if (!VariablePostCalculations.HasValue)
         {
             _output.Add(tokens[0]);
             _op_stack.Add(tokens[1]);
+            startingIndex = 2;
         }
-        else
-        {
+        else {
             _output.Add(VariablePostCalculations.ToString()!);
             _op_stack.Add(tokens[0]);
+            startingIndex = 1;
         }
 
-        int startingIndex = !VariablePostCalculations.HasValue ? 2 : 1;
         for (int i = startingIndex; i < tokens.Length; i++)
         {
             if (double.TryParse(tokens[i], out _))
@@ -63,22 +64,60 @@ public class ArithmeticParser
                 continue;
             }
 
-            _precedence.TryGetValue(tokens[i].ToUpper(), out inputOperation);
+            _precedence.TryGetValue(tokens[i].ToUpper(), out inputOperatorValue);
             counter = _op_stack.Count - 1;
-            _precedence.TryGetValue(_op_stack[counter].ToUpper(), out operationInStack);
+            _precedence.TryGetValue(_op_stack[counter].ToUpper(), out operatorInStackValue);
 
-            if (inputOperation > operationInStack)
+            if (tokens[i] == "(")
+            {
+                hasReachedAParenthesis = true;
+                hasExitAParenthesis = false;
+            }
+
+            if (tokens[i] == ")")
+            {
+                hasReachedAParenthesis = false;
+                hasExitAParenthesis = true;
+            }
+
+            if (inputOperatorValue > operatorInStackValue)
             {
                 _op_stack.Add(tokens[i]);
                 continue;
             }
 
-            while (inputOperation <= operationInStack && _op_stack.Count > 0)
+            if (hasReachedAParenthesis && inputOperatorValue > operatorInStackValue)
+            {
+                _op_stack.Add(tokens[i]);
+                continue;
+            }
+
+            //1 plus 3 times ( 10 divided 2 minus 3 )
+            //Output = 1, 3, 10, 2 
+            //Stack = +, *, (, /
+            while (inputOperatorValue <= operatorInStackValue && _op_stack[counter] != "(")
             {
                 _output.Add(_op_stack[counter]);
                 _op_stack.RemoveAt(counter);
                 counter--;
             }
+
+            if (_op_stack[counter] == "(")
+            {
+                _op_stack.Add(tokens[i]);
+                continue;
+            }
+
+            //Output final = 1, 3, 10, 2, /, 3, -, *, +
+            while (!hasExitAParenthesis &&
+                   (_op_stack.Count > 0 || inputOperatorValue <= operatorInStackValue)
+                  )
+            {
+                _output.Add(_op_stack[counter]);
+                _op_stack.RemoveAt(counter);
+                counter--;
+            }
+
             if (_op_stack.Count == 0) _op_stack.Add(tokens[i]);
             }
 
@@ -88,14 +127,13 @@ public class ArithmeticParser
             _op_stack.RemoveAt(_op_stack.Count - 1);
         }
 
-        //foreach (var item in _output)
-        //{
-        //    Console.Write(item + " ");
-        //}
-        //Console.WriteLine("\n");
+        foreach (var item in _output)
+        {
+            Console.Write(item + " ");
+        }
+        Console.WriteLine("\n");
 
-        SolvingOutput(_output);
-
+        //SolvingOutput(_output);
         _output.Clear();
     }
 
@@ -148,6 +186,10 @@ public class ArithmeticParser
                 case Actions.DIVIDED:
                     VariablePostCalculations = CalculatorOperations.Divide(firstNumber, secondNumber);
                     break;
+
+                case Actions.POWER:
+                    VariablePostCalculations = CalculatorOperations.RaiseToThePower(firstNumber, secondNumber);
+                    break;
             }
 
             _solving_stack.RemoveRange(countForOperations-2, 3);
@@ -162,32 +204,71 @@ public class ArithmeticParser
     private bool TokensAuthentication(string[] arr)
     {
         short countingOperations = 0;
-        bool isAuthenticOperator = false;
-        bool isNumber = false;
+        bool operatorHasCorrectPosition = false;
+        bool numberHasCorrectPosition = false;
+        bool hasReachedAParenthesis = false;
+        bool hasExitAParenthesis = false;
+
+        if (double.TryParse(arr[0], out _)) RestartValues();
         for (int i = 0; i < arr.Length; i++)
         {
-            if (VariablePostCalculations.HasValue && arr.Length > 1)
-            {
-                isAuthenticOperator = MyActions.Contains(arr[i].ToUpper());
-                isNumber = i % 2 != 0 && double.TryParse(arr[i], out _);
+            //if (VariablePostCalculations.HasValue &&
+            //    arr.Length == 1 &&
+            //    double.TryParse(arr[i], out _)) return true;
 
-                if (double.TryParse(arr[0], out _)) RestartValues();
+            if (arr[i] == "(")
+            {
+                hasReachedAParenthesis = true;
+                hasExitAParenthesis = false;
+                continue;
             }
-            else if (
-                VariablePostCalculations.HasValue &&
-                arr.Length == 1 &&
-                double.TryParse(arr[i], out _)) return true;
+            else if (arr[i] == ")")
+            {
+                hasExitAParenthesis = true;
+                hasReachedAParenthesis = false;
+                continue;
+            }
+
+            if (VariablePostCalculations.HasValue && arr.Length > 1) 
+            {
+                operatorHasCorrectPosition = MyActions.Contains(arr[i].ToUpper());
+                numberHasCorrectPosition = i % 2 != 0 && double.TryParse(arr[i], out _);
+
+                if (hasReachedAParenthesis)
+                {
+                    operatorHasCorrectPosition = i % 2 != 0 && MyActions.Contains(arr[i].ToUpper());
+                    numberHasCorrectPosition = double.TryParse(arr[i], out _);
+                }
+
+                if (hasExitAParenthesis)
+                {
+                    operatorHasCorrectPosition = MyActions.Contains(arr[i].ToUpper());
+                    numberHasCorrectPosition = i % 2 != 0 && double.TryParse(arr[i], out _);
+                }
+            }
 
             if (!VariablePostCalculations.HasValue)
             {
-                isAuthenticOperator = i % 2 != 0 && MyActions.Contains(arr[i].ToUpper());
-                isNumber = double.TryParse(arr[i], out _);
+                numberHasCorrectPosition = double.TryParse(arr[i], out _);
+                operatorHasCorrectPosition = i % 2 != 0 && MyActions.Contains(arr[i].ToUpper());
+
+                if (hasReachedAParenthesis)
+                {
+                    numberHasCorrectPosition = i % 2 != 0 && double.TryParse(arr[i], out _);
+                    operatorHasCorrectPosition = MyActions.Contains(arr[i].ToUpper());
+                }
+
+                if (hasExitAParenthesis)
+                {
+                    numberHasCorrectPosition = double.TryParse(arr[i], out _);
+                    operatorHasCorrectPosition = i % 2 != 0 && MyActions.Contains(arr[i].ToUpper());
+                }
             }
 
-            if (!isNumber && !isAuthenticOperator) return false;
+            if (!numberHasCorrectPosition && !operatorHasCorrectPosition) return false;
 
-            if (isAuthenticOperator) countingOperations++;
-            if (isAuthenticOperator && countingOperations < 1 || countingOperations > _maxConsecutivesOperations) return false;
+            if (operatorHasCorrectPosition) countingOperations++;
+            if (operatorHasCorrectPosition && (countingOperations < 1 || countingOperations > _maxConsecutivesOperations)) return false;
         }
         return true;
     }

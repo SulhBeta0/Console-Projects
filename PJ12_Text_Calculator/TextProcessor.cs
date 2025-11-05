@@ -8,14 +8,15 @@ internal static class TextProcessor
         Messages("<<help:\n", ConsoleColor.DarkGray);
         Messages("C:/Users/Calculator.exe> ", ConsoleColor.DarkGreen);
 
-        string text = Console.ReadLine()?.ToUpper()!;
+        string text = "1 plus 3 times ( 10 divided 2 minus 3 )";
+        //string text = Console.ReadLine()?.ToUpper()!;
         return text;
     }
 
     internal static void Commands(string[] actions)
     {
         Console.Clear();
-        Messages("=> /" + String.Join(" /", actions) + "\n", ConsoleColor.White);
+        Messages("=> /" + String.Join(" :", actions) + "\n", ConsoleColor.White);
     }
 
     internal static void Messages(string myText, ConsoleColor color)
