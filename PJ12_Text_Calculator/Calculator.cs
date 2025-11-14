@@ -28,7 +28,7 @@ internal class Calculator
                 continue;
             }
 
-            parser.ParsingOperations(myText);
+            parser.CheckingValidations(myText);
             parser.Result();
 
             Console.ReadKey(true);

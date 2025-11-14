@@ -22,23 +22,8 @@ public class ArithmeticParser
 
     public void RestartValues() => VariablePostCalculations = null;
 
-    public void ParsingOperations(string input)
+    public void ParsingOperations(string[] tokens)
     {
-        string[] tokens = input.Split(" ", StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries);
-        if (!TokensAuthentication(tokens))
-        {
-            TextProcessor.Messages("Syntax Error!\n\n", ConsoleColor.Red);
-            Console.Beep(450, 300);
-            RestartValues();
-            return;
-        }
-
-        if (tokens.Length == 1 && (!VariablePostCalculations.HasValue || VariablePostCalculations.HasValue))
-        {
-            VariablePostCalculations = double.Parse(tokens[0]);
-            return;
-        }
-
         short operatorInStackValue = 0, inputOperatorValue = 0;
         int counter, startingIndex;
         bool hasReachedAParenthesis = false;
@@ -72,6 +57,8 @@ public class ArithmeticParser
             {
                 hasReachedAParenthesis = true;
                 hasExitAParenthesis = false;
+                _op_stack.Add(tokens[i]);
+                continue;
             }
 
             if (tokens[i] == ")")
@@ -80,46 +67,37 @@ public class ArithmeticParser
                 hasExitAParenthesis = true;
             }
 
-            if (inputOperatorValue > operatorInStackValue)
+            if ((hasReachedAParenthesis && inputOperatorValue > operatorInStackValue) ||
+                inputOperatorValue > operatorInStackValue)
             {
                 _op_stack.Add(tokens[i]);
                 continue;
             }
 
-            if (hasReachedAParenthesis && inputOperatorValue > operatorInStackValue)
+            while (inputOperatorValue <= operatorInStackValue &&
+                ((hasReachedAParenthesis || hasExitAParenthesis) || (!hasExitAParenthesis && _op_stack.Count > 0)))
             {
-                _op_stack.Add(tokens[i]);
-                continue;
-            }
+                if (hasExitAParenthesis && _op_stack[counter] == "(")
+                {
+                    _op_stack.Remove(_op_stack[counter]);
+                    counter--;
+                }
+                else if (!hasExitAParenthesis && _op_stack[counter] == "(") break;
 
-            //1 plus 3 times ( 10 divided 2 minus 3 )
-            //Output = 1, 3, 10, 2 
-            //Stack = +, *, (, /
-            while (inputOperatorValue <= operatorInStackValue && _op_stack[counter] != "(")
-            {
                 _output.Add(_op_stack[counter]);
                 _op_stack.RemoveAt(counter);
-                counter--;
+
+                if (_op_stack.Count == 0) break;
+                else counter--;
             }
 
-            if (_op_stack[counter] == "(")
+            if (counter != 0)
             {
-                _op_stack.Add(tokens[i]);
-                continue;
+                if (_op_stack[counter] == "(" && _op_stack.Count != 0)
+                    _op_stack.Add(tokens[i]);
             }
-
-            //Output final = 1, 3, 10, 2, /, 3, -, *, +
-            while (!hasExitAParenthesis &&
-                   (_op_stack.Count > 0 || inputOperatorValue <= operatorInStackValue)
-                  )
-            {
-                _output.Add(_op_stack[counter]);
-                _op_stack.RemoveAt(counter);
-                counter--;
-            }
-
-            if (_op_stack.Count == 0) _op_stack.Add(tokens[i]);
-            }
+            if (_op_stack.Count == 0 && tokens[i] != ")") _op_stack.Add(tokens[i]);
+        }
 
         while (_op_stack.Count > 0)
         {
@@ -133,8 +111,29 @@ public class ArithmeticParser
         }
         Console.WriteLine("\n");
 
-        //SolvingOutput(_output);
+        SolvingOutput(_output);
         _output.Clear();
+    }
+
+    public void CheckingValidations(string input)
+    {
+        string[] tokens = input.Split(" ", StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries);
+        if (!TokensAuthentication(tokens))
+        {
+            TextProcessor.Messages("Syntax Error!\n\n", ConsoleColor.Red);
+            Console.Beep(450, 300);
+            RestartValues();
+            return;
+        }
+
+        if (tokens.Length == 1 && (!VariablePostCalculations.HasValue || VariablePostCalculations.HasValue))
+        {
+            VariablePostCalculations = double.Parse(tokens[0]);
+            return;
+        }
+
+        ParsingOperations(tokens);
+        
     }
 
     public void Result()
@@ -212,10 +211,6 @@ public class ArithmeticParser
         if (double.TryParse(arr[0], out _)) RestartValues();
         for (int i = 0; i < arr.Length; i++)
         {
-            //if (VariablePostCalculations.HasValue &&
-            //    arr.Length == 1 &&
-            //    double.TryParse(arr[i], out _)) return true;
-
             if (arr[i] == "(")
             {
                 hasReachedAParenthesis = true;
