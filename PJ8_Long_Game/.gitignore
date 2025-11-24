@@ -6,7 +6,10 @@ obj/
 x64/
 x86
 Properties/
+.vs/
 
+*.sln
+*.csproj
 *.user
 *.suo
 *.userosscache
@@ -20,5 +23,3 @@ Properties/
 *.tmp
 *.cache
 *.bin
-
-!base_Datos.db
